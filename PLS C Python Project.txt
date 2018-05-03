@@ -1,0 +1,54 @@
+PLS C Python implementation 
+
+Requirements:
+GUI:  friendly with user(easy to make choices , workflow logically and easy to work with documentation)
+          Default mode
+          Option for advanced users
+ Modulation:
+                Code written professionally 
+                Easy to be read
+                Consistency 
+                Conventional 
+                Meaningful
+                Easy to add-on later
+
+ Documentation ( a lot of attention need to be paid):
+ Objects (what problem can be solved)
+ Assumption 
+ Constraints                 
+ Input format
+ Output format
+ Options to have
+ Simple Example 
+
+                
+              
+Data sets:   PET
+             fMRI
+             MEG: able to load different types of pre-processed MEG data (e.g., source space time series) 
+             EEG :  able to convert difference data type into Brain activity matrix 
+                                         (look at matlab package for this part or work with python library such as MNE)
+          Structural MRI: segmentations, DTI                               
+
+          Have ability to deal with high dimension and high volume data
+              One: Python store save data into chunks at hard disk and pull out data into memory chunk by chunk
+              Two: dimension reduction techniques: PCA and Random Projection
+
+Core: (start to work on it     End of April)
+         Input:  Brain Activity Matrix ( from data set) and behavior and design data matrix (defined by user)
+              (Structural zero thing ) discuss with Nancy
+         
+         Methods (main tool):   SVD or GSVD(Generalized SVD)
+
+         Resampling:   
+                        Permutation
+                        Split-half Reliability
+                        Bootstrap
+                        Monte-Carlo
+                       (nice to have feature for parallel computing)
+         
+         Output: Brain Score, behavior design score, patent variables 
+         
+         Visualization: plots in Matlab package (heatmap color prettier!) 
+
+                
