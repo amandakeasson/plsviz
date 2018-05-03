@@ -1,6 +1,6 @@
-THINGS TO DO 
+# THINGS TO DO 
 
--add functions to import nifti files (nibabel)
-
+* add functions to import nifti files (nibabel)
+* add visualization of bsr & saliences
 
 
