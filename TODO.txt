@@ -1,0 +1,6 @@
+THINGS TO DO 
+
+-add functions to import nifti files (nibabel)
+
+
+
