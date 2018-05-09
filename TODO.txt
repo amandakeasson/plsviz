@@ -1,6 +1,10 @@
 # THINGS TO DO 
 
-* add functions to import nifti files (nibabel)
 * add visualization of BSR & saliences
+* wrap data imports in functions (object-oriented programming)
+* use column 1 of the Y file to define group/conditions
 
+# DONE
+
+* ~~add functions to import nifti files (nibabel)~~
 
