@@ -1,54 +1,48 @@
+## TODO ##
+# 1. Wrap these data imports in seperate functions
+
 ## importing imaging data
-import os, getopt, sys
+import os, getopt, sys 
 import pandas as pd
 import numpy as np
 import nibabel as nib
+from optparse import OptionParser
 
 ## define help text
-help_txt = 'test.py -f/--fun <functional_list.txt> -b/--behav <behav_data.csv> -g/--grp <group_index.txt> -m/--mask <mask.nii>'
+help_txt = 'test.py -f/--fun <functional_list.txt> -b/--behav <behav_data.csv> -g/--cond <group_index.txt> -m/--mask <mask.nii>'
 
 ## get opts from terminal
-def main(argv):
-	try:
-		opts, args = getopt.getopt(argv,"f:bgmh",["fun=","behav","grp","mask", 'help'])
-		print "The arguments are: " , str(sys.argv)
-	except getopt.GetoptError:
-		print(help_txt)
-		sys.exit(2)
-	for opt, arg in opts:
-		if opt in ('-h', '--help'):
-			print(help_txt)
-			sys.exit()
-		elif opt in ("-f", "--fun"):
-			fun_name = arg
-		elif opt in ("-b", "--behav"):
-			behav_nm = arg
-		elif opt in ("-g", "--grp"):
-			group_file = arg
-		elif opt in ("-m", "--mask"):
-			mask_path = arg
-	print('behaviour is', behav_nm)
+parser = OptionParser()
+parser.add_option("-x",           dest="X_file"   , type='str', help="Text file listing all image files to load into the PLS.")
+parser.add_option("-y",           dest="Y_file"   , type='str', help="Absolute path to the behavioural data. Must be in .csv format.")
+parser.add_option("-m", "--mask", dest="mask_file", type='str', help="Absolute path to the brain/roi mask.")
+(options, args) = parser.parse_args()
 
-				
-if __name__ == "__main__":
-	main(sys.argv[1:])
+## sample data 
+# Y_file    = "C:\Users\enter\Documents\Software\gitrepos\plsviz\data_behavior_y.csv"
+# X_file    = "C:\Users\enter\Documents\Software\gitrepos\plsviz\sample_img\x_file_ls.txt"
+# mask_file = "C:\Users\enter\Documents\Software\gitrepos\plsviz\sample_masks\\bin_fun_MNI152.nii.gz"
+
+
 
 try:
-	group_file
+	options.Y_file
 except:
-	behav_nm
-else:
-	print('You need to define at least one of the following: behaviour or groups')
+	print('You need to include a behaviour/condition file.')
 	print(help_txt)
 	sys.exit()
 
+X_file    = options.X_file
+Y_file    = options.Y_file
+mask_file = options.mask_file
 
-## Check for mask
-# sample_mask = '/Users/steveneusebio/Documents/brain_hack/pls_m2py/sample_datasets/bin_fun_MNI152.nii.gz'
-# mask_path   = sample_mask
+print(X_file)
+print(Y_file)
+print(mask_file)
 
+## Import mask
 try:
-	mask      = nib.load(mask_path)
+	mask      = nib.load(mask_file)
 	mask      = mask.get_data()
 
 	mask_dims = mask.shape
@@ -63,13 +57,7 @@ except:
 	st_coords = None
 
 ## Import functional data
-# sample_fun = '/Users/steveneusebio/Documents/brain_hack/pls_m2py/sample_datasets/sample_list.txt'
-# fun_name = sample_fun
-
-# feed in a text file where each line is the absolute path to
-# subject nifti data
-
-dsets = [line.rstrip('\n') for line in open(fun_name)]
+dsets = [line.rstrip('\n') for line in open(X_file)]
 
 X_mat = np.array([])
 for dset in dsets:
@@ -91,29 +79,17 @@ for dset in dsets:
 		X_mat = dset_vec
 
 ## import behavioural data
-# behavioural data must be a csv, each row = 1 subject/run
-#                                 each column = behav measure
-
-# sample data
-
-# sample_behav = '/Users/steveneusebio/Documents/brain_hack/pls_m2py/sample_datasets/behav_sample.csv'
-# behav_nm = sample_behav
-
 try:
-	behav = pd.read_csv(behav_nm, sep=',')
+	behav = pd.read_csv(Y_file, sep=',')
 	Y_mat = behav.values
+	C_mat = ''
 except:
 	Y_mat = np.eye(X_mat.shape[0])
 
 ## define groups
-## *optional
-
-# group file must be a csv with one column, 
-# each row defining subject group membership. 
-
 try:
-	G_mat = pd.read_csv(group_file, header=None)
-	G_mat = G_mat.set_index([0]).index.values
+	C_mat = pd.read_csv(cond_file, header=None)
+	C_mat = C_mat.set_index([0]).index.values
 except:
-	G_mat = [1] * X_mat.shape[0]
-	G_mat = pd.DataFrame(G_mat)
+	C_mat = [1] * X_mat.shape[0]
+	C_mat = pd.DataFrame(C_mat)
