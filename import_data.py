@@ -1,5 +1,6 @@
 ## TODO ##
 # 1. add option to comment out data points
+# 2. Can speed up the importing of X by copying the mask for n timepoints, instead of looping over each time point of each dataset
 
 ## importing packages
 import os, getopt, sys 
@@ -40,12 +41,11 @@ def importX(X_file, st_coords):
 			for tt in range(0,dset_dims[3]):
 				tmp_dset_vec = np.reshape(dset_array[:,:,:,tt], (1,dset_len))
 				tmp_dset_vec = tmp_dset_vec[:,st_coords]
-				# tmp_dset_vec = np.transpose(tmp_dset_vec)
 				try:
 					dset_vec = np.append(dset_vec, tmp_dset_vec)
 				except:
 					dset_vec = tmp_dset_vec
-			
+
 			try:
 				X_mat = np.vstack([X_mat, dset_vec])
 			except:
