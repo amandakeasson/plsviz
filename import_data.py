@@ -14,8 +14,8 @@ def importMask(mask_file):
 		mask      = nib.load(mask_file)
 		mask      = mask.get_data()
 		mask_dims = mask.shape
-		mask_vec  = reduce( (lambda x, y: x * y), mask_dims)
-		mask_vec  = np.reshape(mask, (1,mask_vec))
+		# mask_vec  = np.prod(mask_dims)
+		# mask_vec  = np.reshape(mask, (1,mask_vec))
 		mask_vec  = (mask_vec > 0.5).astype(np.int_)
 		st_coords = np.where(mask_vec == 1)[1]
 	except:
@@ -35,18 +35,23 @@ def importX(X_file, st_coords):
 		
 		#reshaping dset into vector
 		dset_dims  = dset.shape
-		dset_len   = reduce( (lambda x, y: x * y), dset_dims)
-		dset_vec   = np.reshape(dset_array, (1,dset_len))
-
-		# apply the mask
-		dset_vec = np.array(dset_vec[0, st_coords])
-
-		try:
-			X_mat = np.vstack([X_mat, dset_vec])
-		except:
-			X_mat = dset_vec
+		dset_len   = np.prod(dset_dims[0:3])
+		if len(dset_dims) > 3:
+			for tt in range(0,dset_dims[3]):
+				tmp_dset_vec = np.reshape(dset_array[:,:,:,tt], (1,dset_len))
+				tmp_dset_vec = tmp_dset_vec[:,st_coords]
+				# tmp_dset_vec = np.transpose(tmp_dset_vec)
+				try:
+					dset_vec = np.append(dset_vec, tmp_dset_vec)
+				except:
+					dset_vec = tmp_dset_vec
+			
+			try:
+				X_mat = np.vstack([X_mat, dset_vec])
+			except:
+				X_mat = dset_vec
+			del dset_vec
 	print(X_mat.shape)
-	return(X_mat)
 
 ## import behavioural data
 def importY(Y_file, X_mat):
