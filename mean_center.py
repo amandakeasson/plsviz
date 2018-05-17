@@ -5,7 +5,7 @@ import numpy as np
 import nibabel as nib
 from optparse import OptionParser
 
-def main(all, center_type):
+def main():
 
 	## get opts from terminal
 	parser = OptionParser()
